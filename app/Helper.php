@@ -5,6 +5,7 @@ use App\Models\SettingsModel;
 use App\Models\User;
 use App\Models\WorkHoursModel;
 
+if (!function_exists('calculate_referrer_bonus')) {
 function calculate_referrer_bonus(User $referrer): float
     {
         $referrer_percent = SettingsModel::value('referrer_percent');
@@ -18,5 +19,6 @@ function calculate_referrer_bonus(User $referrer): float
 
         return round($totalEarnings, 2);
     }
+}
 
 ?>
