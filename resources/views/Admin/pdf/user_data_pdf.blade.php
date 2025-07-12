@@ -11,18 +11,18 @@
             margin: 0;
             padding: 0;
             background-color: #f4f4f9;
+            font-size: 12px; /* Reduce font size for better readability */
         }
 
         /* Page layout */
         .container {
-            width: 90%;
+            width: 100%; /* Ensure container takes full width */
             margin: 0 auto;
-            padding: 30px;
+            padding: 10px;
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow-x: auto; /* Enable horizontal scroll for overflow */
-            -webkit-overflow-scrolling: touch; /* For better scroll on mobile devices */
+            overflow-x: auto; /* Allow horizontal scrolling if needed */
         }
 
         /* Header styling */
@@ -32,7 +32,7 @@
         }
 
         .header h1 {
-            font-size: 28px;
+            font-size: 22px;
             color: #333;
             font-weight: bold;
         }
@@ -47,21 +47,21 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            table-layout: fixed; /* Ensures column widths are more consistent */
         }
 
         table th, table td {
             border: 1px solid #ddd;
-            padding: 5px 5px;
+            padding: 8px 12px; /* Slightly increased padding */
             text-align: left;
-            word-wrap: break-word; /* Prevents overflow in cells */
-            max-width: 250px; /* Limits width of each column */
+            word-wrap: break-word;
+            max-width: 200px; /* Limit column width */
         }
 
         table th {
-            background-color: #4CAF50;
+            background-color: #343a40; /* Dark background for header */
             color: white;
             font-weight: bold;
+            text-align: center;
         }
 
         table td {
@@ -73,19 +73,24 @@
         }
 
         table tr:hover {
-            background-color: #f1f1f1;
+            background-color: #e2e2e2; /* Slight hover effect */
         }
 
         /* Footer Styling */
         .footer {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 20px;
             font-size: 12px;
             color: #888;
         }
 
         .footer p {
             margin: 0;
+        }
+
+        /* Styling for the table headers and cells */
+        table th {
+            text-transform: uppercase;
         }
     </style>
 </head>
@@ -100,6 +105,7 @@
         <table>
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>First Name</th>
                     <th>Last Name</th>
                     <th>Email</th>
@@ -111,8 +117,9 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($users as $user)
+                @foreach ($users as $index => $user)
                     <tr>
+                        <td>{{ $index + 1 }}</td>
                         <td>{{ $user->first_name }}</td>
                         <td>{{ $user->last_name }}</td>
                         <td>{{ $user->email }}</td>
