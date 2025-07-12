@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\EmployeesModel;
+use App\Models\SettingsModel;
 use App\Models\WorkHoursModel;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -170,6 +171,8 @@ class ConnecteamService
                                 ->where('employee_id', $map['employee_id'])
                                 ->first();
 
+                                $tokensPerHour = SettingsModel::value('points'); 
+                                
                                 if(!$entryExistsForWeek){
                                     WorkHoursModel::create([
                                         'employee_id' => $map['employee_id'],
@@ -180,6 +183,13 @@ class ConnecteamService
                                         'from_date' => $fromDate,
                                         'to_date' => $toDate,
                                         'total_hours' => $totalHours,
+                                        'tokens' => $totalHours * $tokensPerHour
+                                    ]);
+                                }
+                                else if($entryExistsForWeek && $entryExistsForWeek->total_hours != $totalHours){
+                                    $entryExistsForWeek->update([
+                                        'total_hours' => $totalHours,
+                                        'tokens' => $totalHours * $tokensPerHour
                                     ]);
                                 }
                             }

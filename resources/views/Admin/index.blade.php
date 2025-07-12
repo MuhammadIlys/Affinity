@@ -15,6 +15,12 @@
                     <li class="breadcrumb-item"><a href="index.html">Home</a></li>
                     <li class="breadcrumb-item active">Dashboard</li>
                 </ol>
+                <div style="text-align: right;">
+                <form method="POST" action="{{ route('run.command') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-primary">Run Hours Command</button>
+                </form>
+                </div>
             </nav>
         </div><!-- End Page Title -->
 

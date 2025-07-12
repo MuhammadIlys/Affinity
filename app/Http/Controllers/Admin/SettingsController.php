@@ -266,4 +266,11 @@ class SettingsController extends Controller
         // Write the updated content back to .env
         File::put($envPath, $envContent);
     }
+
+    public function runCommand(Request $request)
+    {
+        Artisan::call('app:calculate-weekly-connecteam-hours');
+
+        return back()->with('success', 'Command executed successfully!');
+    }
 }

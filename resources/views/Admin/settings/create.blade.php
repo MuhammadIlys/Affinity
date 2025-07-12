@@ -70,7 +70,7 @@
                                 </div>
 
                                  <div class="card mb-4">
-                                    <div class="card-header  bg-info text-dark">Ponts per hour</div>
+                                    <div class="card-header  bg-info text-dark">Points per hour</div>
                                     <div class="card-body mt-4">
                                         <div class="mb-3">
                                             <label for="points" class="form-label">Enter points per hour</label>

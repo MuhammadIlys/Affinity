@@ -12,6 +12,9 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 
+   // For running command
+    Route::post('/run-hours-command', [SettingsController::class, 'runCommand'])->name('run.command');
+
     // Forgot password request
     Route::controller(ForgotPasswordController::class)->group(function () {
         Route::get('/forgot-password', 'showLinkRequestForm')->name('forgot.password');
