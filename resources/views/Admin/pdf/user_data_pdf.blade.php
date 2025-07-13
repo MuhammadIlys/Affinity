@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Users Data</title>
+    <title>User Data</title>
     <style>
         /* General Styling */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
-            font-size: 12px; /* Reduce font size for better readability */
+            /* background-color: #f4f4f9; */
+            background-color: #fff;
         }
 
         /* Page layout */
         .container {
-            width: 100%; /* Ensure container takes full width */
+            width: 90%;
+            /* height:100%; */
             margin: 0 auto;
-            padding: 10px;
+            padding: 30px;
             background-color: white;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow-x: auto; /* Allow horizontal scrolling if needed */
         }
 
         /* Header styling */
@@ -32,7 +32,7 @@
         }
 
         .header h1 {
-            font-size: 22px;
+            font-size: 24px;
             color: #333;
             font-weight: bold;
         }
@@ -46,40 +46,29 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin: 20px 0;
         }
 
         table th, table td {
             border: 1px solid #ddd;
-            padding: 8px 12px; /* Slightly increased padding */
+            padding: 10px;
             text-align: left;
-            word-wrap: break-word;
-            max-width: 200px; /* Limit column width */
         }
 
         table th {
-            background-color: #343a40; /* Dark background for header */
+            background-color: #4CAF50;
             color: white;
             font-weight: bold;
-            text-align: center;
         }
 
         table td {
             background-color: #f9f9f9;
         }
 
-        table tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        table tr:hover {
-            background-color: #e2e2e2; /* Slight hover effect */
-        }
-
         /* Footer Styling */
         .footer {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 30px;
             font-size: 12px;
             color: #888;
         }
@@ -87,50 +76,49 @@
         .footer p {
             margin: 0;
         }
-
-        /* Styling for the table headers and cells */
-        table th {
-            text-transform: uppercase;
-        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div class="header">
-            <h1>Users Data</h1>
-            <p>Below is a list of all users and their respective details.</p>
+            <h1>Name : {{ $user->first_name }} {{ $user->last_name }}</h1>
+            <p>Email : {{ $user->email }}</p>
         </div>
 
         <table>
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Address</th>
-                    <th>Gender</th>
-                    <th>Job Title</th>
-                    <th>Total Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($users as $index => $user)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $user->first_name }}</td>
-                        <td>{{ $user->last_name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $user->phone }}</td>
-                        <td>{{ $user->address }}</td>
-                        <td>{{ $user->gender }}</td>
-                        <td>{{ $user->job_title }}</td>
-                        <td>{{ $user->total_amount }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
+            <tr>
+                <th>First Name</th>
+                <td>{{ $user->first_name }}</td>
+            </tr>
+            <tr>
+                <th>Last Name</th>
+                <td>{{ $user->last_name }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ $user->email }}</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>{{ $user->phone }}</td>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <td>{{ $user->address }}</td>
+            </tr>
+            <tr>
+                <th>Gender</th>
+                <td>{{ $user->gender }}</td>
+            </tr>
+            <tr>
+                <th>Job Title</th>
+                <td>{{ $user->job_title }}</td>
+            </tr>
+            <tr>
+                <th>Total Points</th>
+                <td>{{ $user->total_amount }}</td>
+            </tr>
         </table>
 
         <div class="footer">
