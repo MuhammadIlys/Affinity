@@ -19,7 +19,7 @@ class AdminController extends Controller
         $employees = EmployeesModel::count();
         $admins = User::where('role','admin')->count();
         $total_amount = $user->total_amount;
-        return view('admin.index',compact('user','referrers','employees','admins','total_amount'));
+        return view('Admin.index',compact('user','referrers','employees','admins','total_amount'));
     }
 
     public function profile()
