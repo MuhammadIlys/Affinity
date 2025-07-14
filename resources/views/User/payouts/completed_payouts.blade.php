@@ -34,7 +34,7 @@
                                         <th scope="col" data-sortable="true"><button
                                                 class="datatable-sorter">Status</button></th>
                                         <th scope="col" data-sortable="true"><button class="datatable-sorter">Created at</button></th>
-                                        <th scope="col" data-sortable="true"><button class="datatable-sorter">Action</button></th>
+                                        {{-- <th scope="col" data-sortable="true"><button class="datatable-sorter">Action</button></th> --}}
                                     </tr>
                                 </thead>
 
@@ -49,15 +49,14 @@
                                                 <td>{{ $payout->total_amount }}</td>
                                                 <td>{{ $payout->status }}</td>
                                                 <td>{{ $payout->created_at }}</td>
-                                                <td>
-                                                    {{-- <a href="" class="btn btn-sm btn-info w-100 mb-1">Edit</a> --}}
+                                                {{-- <td>
                                                     <form action="{{ route('payout.delete',encrypt($payout->id)) }}" method="POST" class="d-inline-block w-100">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-sm btn-danger w-100"
                                                             onclick="return confirm('Are you sure?')">Delete</button>
                                                     </form>
-                                                </td>
+                                                </td> --}}
                                             </tr>
                                         @endforeach
                                     @endif

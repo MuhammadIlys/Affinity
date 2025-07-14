@@ -34,14 +34,14 @@
                                                 Name</button></th>
                                         <th scope="col" data-sortable="true"><button class="datatable-sorter">Referred
                                                 By</button></th>
-                                        <th scope="col" data-sortable="true"><button
-                                                class="datatable-sorter">Email</button></th>
+                                        {{-- <th scope="col" data-sortable="true"><button
+                                                class="datatable-sorter">Email</button></th> --}}
                                         <th scope="col" data-sortable="true"><button class="datatable-sorter">Job
                                                 Title</button></th>
                                         {{-- <th scope="col" data-sortable="true"><button
                                                 class="datatable-sorter">Address</button></th> --}}
-                                        <th scope="col" data-sortable="true"><button
-                                                class="datatable-sorter">Phone</button></th>
+                                        {{-- <th scope="col" data-sortable="true"><button
+                                                class="datatable-sorter">Phone</button></th> --}}
                                         {{-- <th scope="col" data-sortable="true"><button
                                                 class="datatable-sorter">Balance</button></th> --}}
                                         {{-- <th scope="col" data-sortable="true"><button
@@ -61,10 +61,11 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $referred_user->first_name }}</td>
                                                 <td>{{ $referred_user->last_name }}</td>
-                                                <td>{{ @$referred_user->referrer->first_name . ' ' . @$referred_user->referrer->last_name }}</td>
-                                                <td>{{ $referred_user->email }}</td>
+                                                <td>{{ @$referred_user->referrer->first_name . ' ' . @$referred_user->referrer->last_name }}
+                                                </td>
+                                                {{-- <td>{{ $referred_user->email }}</td> --}}
                                                 <td>{{ $referred_user->job_title }}</td>
-                                                <td>{{ $referred_user->phone }}</td>
+                                                {{-- <td>{{ $referred_user->phone }}</td> --}}
                                                 {{-- <td>{{ $referred_user->total_amount }}</td> --}}
                                                 <td>{{ $referred_user->status }}</td>
                                                 {{-- <td>{{ $referred_user->address }}</td> --}}
