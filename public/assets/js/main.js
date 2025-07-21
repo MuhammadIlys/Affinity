@@ -57,6 +57,7 @@
     })
   }
 
+
   /**
    * Navbar links active state on scroll
    */
@@ -316,29 +317,160 @@
     }, 200);
   }
 
-  document.addEventListener("DOMContentLoaded", function () {
-        const editButtons = document.querySelectorAll(".edit-btn");
-        const modal = new bootstrap.Modal(document.getElementById("editModal"));
+  document.addEventListener('DOMContentLoaded', function () {
+    const profileImage = document.getElementById('profileImage');
+    // Check if the profile image exists and has a valid source
+    if (profileImage && profileImage.src !== '') {
+      // Add click event listener if the profile image exists and has a valid src
+      profileImage.addEventListener('click', function () {
+        document.getElementById('imageUpload').click(); // Trigger the file input click
+      });
+    }
 
-        editButtons.forEach(button => {
-            button.addEventListener("click", () => {
-                // Get data from button
-                const id = button.getAttribute("data-id");
-                const name = button.getAttribute("data-name");
-                const amount = button.getAttribute("data-amount");
-                const status = button.getAttribute("data-status");
-                const url = button.getAttribute("data-url");
+    if (profileImage) {
+      document.getElementById('imageUpload').addEventListener('change', function (event) {
+        console.log('clicked the function')
+        const file = event.target.files[0];
+        if (file) {
+          const formData = new FormData();
+          formData.append('image', file);
 
-                // Populate modal fields
-                document.getElementById("totalAmount").value = amount;
+          // Make an AJAX request to upload the image
+          fetch('/profile-image-save', {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+          })
+            .then(response => response.json())  // Parse the JSON response
+            .then(data => {
+              console.log('Response from server:', data);  // Log the full response data
 
-                // Set form action
-                document.getElementById("editForm").setAttribute("action", url);
+              if (data.success) {
+                // Update the displayed image with the new image URL
+                document.getElementById('profileImage').src = data.imageUrl;
+                document.getElementById('AdminProfile').src = data.imageUrl;
 
-                // Show modal
-                modal.show();
+              } else {
+                console.log('Error uploading image.');
+              }
+            })
+            .catch(error => {
+              console.log('Error:', error);
+              // alert('An error occurred while uploading the image.');
             });
+        }
+      });
+    }
+
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const UserProfileImage = document.getElementById('UserProfileImage');
+    // Check if the profile image exists and has a valid source
+    if (UserProfileImage && UserProfileImage.src !== '') {
+      // Add click event listener if the profile image exists and has a valid src
+      UserProfileImage.addEventListener('click', function () {
+        document.getElementById('UserimageUpload').click(); // Trigger the file input click
+      });
+    }
+
+    if (UserProfileImage) {
+      document.getElementById('UserimageUpload').addEventListener('change', function (event) {
+        console.log('In User image upload')
+        const file = event.target.files[0];
+        if (file) {
+          const formData = new FormData();
+          formData.append('image', file);
+
+          // Make an AJAX request to upload the image
+          fetch('/user-profile-image-save', {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+          })
+            .then(response => response.json())  // Parse the JSON response
+            .then(data => {
+              console.log('Response from server:', data);  // Log the full response data
+
+              if (data.success) {
+                // Update the displayed image with the new image URL
+                document.getElementById('UserProfileImage').src = data.imageUrl;
+                document.getElementById('UserProfile').src = data.imageUrl;
+              } else {
+                console.log('Error uploading image.');
+              }
+            })
+            .catch(error => {
+              console.log('Error:', error);
+              // alert('An error occurred while uploading the image.');
+            });
+        }
+      });
+    }
+
+  });
+
+
+  document.getElementById('download-checked').addEventListener('click', function (e) {
+    e.preventDefault();
+
+    const checkboxes = document.querySelectorAll('input[name="selected_ids[]"]:checked');
+    const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+
+    if (selectedIds.length === 0) {
+      alert('Please select at least one referrer.');
+      return;
+    }
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const formData = new FormData();
+    formData.append('_token', csrfToken);
+    selectedIds.forEach(id => formData.append('selected_ids[]', id));
+
+    fetch('/download-checked-pdf', {
+      method: 'POST',
+      body: formData
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Server responded with error.');
+        }
+        // alert('PDF generated successfully!');
+      })
+      .catch(error => {
+        console.error('Download failed:', error);
+        alert('Failed to generate PDF: ' + error.message);
+      });
+  });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const editButtons = document.querySelectorAll(".edit-btn");
+      const modal = new bootstrap.Modal(document.getElementById("editModal"));
+
+      editButtons.forEach(button => {
+        button.addEventListener("click", () => {
+          // Get data from button
+          const id = button.getAttribute("data-id");
+          const name = button.getAttribute("data-name");
+          const amount = button.getAttribute("data-amount");
+          const status = button.getAttribute("data-status");
+          const url = button.getAttribute("data-url");
+
+          // Populate modal fields
+          document.getElementById("totalAmount").value = amount;
+
+          // Set form action
+          document.getElementById("editForm").setAttribute("action", url);
+
+          // Show modal
+          modal.show();
         });
+      });
     });
 
 })();

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminPayouts;
 use App\Http\Controllers\Admin\AdminsController;
 use App\Http\Controllers\Admin\EmployeesController;
+use App\Http\Controllers\Admin\PayoutPdfController;
 use App\Http\Controllers\Admin\PayoutRequestsController;
 use App\Http\Controllers\Admin\PdfController;
 use App\Http\Controllers\Admin\ReferrerController;
@@ -34,12 +35,14 @@ Route::group(['middleware' => ['admin']], function () {
         Route::get('/admin', 'index')->name('admin.index');
         Route::get('/profile', 'profile')->name('admin.profile');
         Route::post('/profile-save', 'saveProfile')->name('admin.profile.save');
+        Route::post('/profile-image-save', 'saveProfileImage')->name('admin.profile.image.save');
         Route::post('/change-password', 'changePassword')->name('password.change');
     });
 
     Route::resource('referrers', ReferrerController::class);
     Route::controller(PdfController::class)->group(function(){
         Route::get('/download-pdf','downloadPDF')->name('download.pdf');
+        Route::post('/download-checked-pdf','downloadCheckedPDF')->name('download.checked.pdf');
     });
     Route::resource('employees', EmployeesController::class);
     Route::get('employees/{employee}/connecteam-user', [EmployeesController::class, 'getConnecteamUser'])
@@ -60,4 +63,10 @@ Route::group(['middleware' => ['admin']], function () {
         Route::post('/update-request/{id}', 'update_request')->name('request.update');
         Route::delete('/delete-request/{id}', 'delete_request')->name('request.delete');
     });
+    
+    Route::controller(PayoutPdfController::class)->group(function(){
+        Route::get('/completed-payout-pdf','completed_payout')->name('completed.payout.pdf');
+    });
+
+
 });

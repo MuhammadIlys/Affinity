@@ -20,8 +20,11 @@
                 <div class="col-12">
                     <div class="card recent-sales overflow-auto">
                         <div class="card-body pt-3 table-responsive">
-                            <div class="my-3">
-                                <span class="card-title">Completed Payouts</span>
+                            <div class="my-3 d-flex justify-content-between align-items-center">
+                                <span class="card-title">Completed payouts</span>
+                                <span class="ms-auto">
+                                    <a href="{{ route('completed.payout.pdf') }}" class="btn btn-sm btn-primary">Download</a>
+                                </span>
                             </div>
                             <table class="table table-borderless datatable">
                                 <thead>

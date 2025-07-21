@@ -12,7 +12,7 @@
             </div> --}}
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
                     <li class="breadcrumb-item active">Dashboard</li>
                 </ol>
                 <div style="text-align: right;">
@@ -101,7 +101,40 @@
                             </div>
                         </div>
 
+                        <div class="col-xxl-4 col-md-4">
+                            <div class="card info-card revenue-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Pending payouts</h5>
+                                    <div class="d-flex align-items-center">
+                                        <div
+                                            class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-people-fill"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6>{{ $pending_payouts }}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+
+                        <div class="col-xxl-4 col-md-4">
+                            <div class="card info-card revenue-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Completed payouts</h5>
+                                    <div class="d-flex align-items-center">
+                                        <div
+                                            class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-people-fill"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6>{{ $completed_payouts }}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- Recent Sales -->
                         {{-- <div class="col-12">

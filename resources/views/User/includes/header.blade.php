@@ -23,9 +23,11 @@
 
                 <a class="nav-link nav-profile d-flex justify-content-start align-items-center pe-0" href="#"
                     data-bs-toggle="dropdown">
-                    <img src="{{ asset('assets/img/placeholder.jpeg') }}" alt="Profile" class="rounded-circle">
+                    <img src="{{ Auth::check() && Auth::user()->image ? asset(Auth::user()->image) : asset('assets/img/placeholder.jpeg') }}"
+                        alt="Profile" class="rounded-circle" id="UserProfile">
                     <span class="d-none d-md-block dropdown-toggle ps-2">{{ Auth::user()->name }}</span>
-                </a><!-- End Profile Iamge Icon -->
+                </a>
+                <!-- End Profile Iamge Icon -->
 
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">

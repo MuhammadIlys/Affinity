@@ -22,14 +22,24 @@
 
                         <div class="card-body p-5">
                             <div class="d-flex flex-row align-items-center gap-4">
-                                <img src="http://127.0.0.1:8000/assets/img/placeholder.jpeg" alt="Profile"
-                                    class="rounded-circle border border-2 border-primary" style="width:100px; height:100px">
+                                <!-- Display the current profile image -->
+                                <img id="profileImage"
+                                    src="{{ $user->image ? asset($user->image) : asset('assets/img/placeholder.jpeg') }}"
+                                    alt="Profile" class="rounded-circle border border-2 border-primary"
+                                    style="width:100px; height:100px">
+
+
+                                <!-- Hidden file input to select a new image -->
+                                <input type="file" id="imageUpload" style="display: none;" accept="image/*">
+
                                 <div>
                                     <h3 class="fw-bolder text-secondary">Emmanuel John</h3>
                                     <h6 class="fw-bold text-secondary">CEO</h6>
                                 </div>
                             </div>
                         </div>
+
+
                     </div>
                 </div>
                 <div class="col-12">

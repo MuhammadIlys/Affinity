@@ -131,10 +131,10 @@
                                         value="{{ old('address', $employee->address ?? '') }}" placeholder="1234 Main St">
                                 </div>
 
-                                <div class="col-12 col-lg-6">
-                                    <label for="gender" class="form-label">
+                                {{-- <div class="col-12 col-lg-6">
+                                    <label for="referred_by" class="form-label">
                                         Referred By
-                                        @error('gender')
+                                        @error('referred_by')
                                             <small class="text-danger">({{ $message }})</small>
                                         @enderror
                                     </label>
@@ -147,7 +147,27 @@
                                             @endforeach
                                         @endif
                                     </select>
+                                </div> --}}
+
+                                <div class="col-12 col-lg-6">
+                                    <label for="referred_by" class="form-label">
+                                        Referred By
+                                        @error('referred_by')
+                                            <small class="text-danger">({{ $message }})</small>
+                                        @enderror
+                                    </label>
+                                    <select class="form-select" name="referred_by" id="referred_by"
+                                        aria-label="referred_by select">
+                                        @if ($referrers)
+                                            @foreach ($referrers as $referrer)
+                                                <option value="{{ $referrer->id }}">
+                                                    {{ $referrer->first_name . ' ' . $referrer->last_name }}
+                                                </option>
+                                            @endforeach
+                                        @endif
+                                    </select>
                                 </div>
+
 
                                 <div class="col-12 col-lg-6">
                                     <label for="status" class="form-label">
@@ -158,7 +178,8 @@
                                     </label>
                                     <select class="form-select" name="status" aria-label="Select">
                                         <option value="active"
-                                            {{ old('status', $employee->status ?? '') == 'active' ? 'selected' : '' }}>active
+                                            {{ old('status', $employee->status ?? '') == 'active' ? 'selected' : '' }}>
+                                            active
                                         </option>
                                         <option value="inactive"
                                             {{ old('status', $employee->status ?? '') == 'inactive' ? 'selected' : '' }}>
@@ -167,7 +188,7 @@
 
                                 </div>
 
-                              
+
 
                                 <div class="text-end">
                                     <button type="submit" class="btn btn-primary">Submit</button>

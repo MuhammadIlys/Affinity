@@ -27,13 +27,16 @@
                                 <div class="col-12">
                                     {{-- <h6 style="font-size: 30px; font-weight:700; border-left:5px solid blue" class="text-secondary ps-3 mb-3"> Employee details </h6> --}}
                                     <div class="d-flex flex-row gap-3">
+
                                         <div class="d-flex justify-content-center justify-content-lg-start">
-                                            <img class="img" src="{{ asset('assets/img/placeholder.jpeg') }}"
+                                            <img class="img" src="{{ asset($referrer->image) }}"
                                                 style="width:150px; height:150px; border-radius:100px" alt="">
+
                                         </div>
                                         <div class="d-flex flex-column align-items-center justify-content-center">
                                             <div>
-                                                <h6 style="font-size: 30px; font-weight:700" class="text-secondary">{{ $referrer->first_name . ' ' . $referrer->last_name }}<b></b> </h6>
+                                                <h6 style="font-size: 30px; font-weight:700" class="text-secondary">
+                                                    {{ $referrer->first_name . ' ' . $referrer->last_name }}<b></b> </h6>
                                                 {{-- <h6 style="font-size: 15px; font-weight:500" class="text-secondary">CEO</h6> --}}
                                             </div>
                                         </div>
@@ -49,7 +52,8 @@
                                                         <i class="ri-mail-line"></i>
                                                     </div>
                                                     <div class="ps-3">
-                                                        <h6 style="font-size: 16px; font-weight:600" class="me-2">{{$referrer->email}}</h6>
+                                                        <h6 style="font-size: 16px; font-weight:600" class="me-2">
+                                                            {{ $referrer->email }}</h6>
                                                     </div>
                                                 </div>
                                             </div>
@@ -78,7 +82,8 @@
                                                         <i class="bi bi-telephone-plus"></i>
                                                     </div>
                                                     <div class="ps-3">
-                                                        <h6 style="font-size: 16px; font-weight:600">{{ $referrer->phone }}</h6>
+                                                        <h6 style="font-size: 16px; font-weight:600">{{ $referrer->phone }}
+                                                        </h6>
                                                     </div>
                                                 </div>
                                             </div>
@@ -92,7 +97,8 @@
                                                         <i class="bi bi-aspect-ratio-fill"></i>
                                                     </div>
                                                     <div class="ps-3">
-                                                        <h6 style="font-size: 16px; font-weight:600" class="me-2">{{ $referrer->total_amount }}</h6>
+                                                        <h6 style="font-size: 16px; font-weight:600" class="me-2">
+                                                            {{ $referrer->total_amount }}</h6>
                                                     </div>
                                                 </div>
                                             </div>

@@ -27,7 +27,7 @@ class ReferrerController extends Controller
 
             $totalEarnings = 0;
             foreach ($referredEmployees as $employee) {
-                $totalEarnings += ($employee->total_amount * $referrer_percent) / 100;
+                $totalEarnings += ($employee->total_amount * $referrer_percent);
             }
 
             // Add earnings as a custom attribute
@@ -84,7 +84,7 @@ class ReferrerController extends Controller
      */
     public function show(string $id)
     {
-        $referrer = User::findorfail($id);
+        $referrer = User::findorfail($id); 
         $total_amount = calculate_referrer_bonus($referrer);
         $referrer->total_amount = $total_amount;
         return view('Admin.referrer.referrer_details', compact('referrer'));
@@ -136,6 +136,7 @@ class ReferrerController extends Controller
         $id = decrypt($id);
         $referrer = User::findorfail($id);
         if ($referrer->delete()) {
+            // EmployeesModel::where('refered_by', $referrer->id)->delete();
             return redirect()->route('referrers.index')->with('success', 'Referrer deleted successfully.');
         } else {
             return redirect()->route('referrers.index')->with('error', 'Something went wrong');

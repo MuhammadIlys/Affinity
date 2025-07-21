@@ -27,12 +27,14 @@
                                     <div class="my-3 d-flex justify-content-between align-items-center">
                                         <span class="card-title">Referrers</span>
                                         <span class="ms-auto">
-                                            <a href="{{ route('download.pdf') }}" class="btn btn-sm btn-primary">Download</a>
+                                            <a href="{{ route('download.pdf') }}"
+                                                class="btn btn-sm btn-primary">Download</a>
                                         </span>
                                     </div>
                                     <table class="table table-borderless datatable">
                                         <thead>
                                             <tr>
+                                                <th></th>
                                                 <th scope="col" data-sortable="true"><button
                                                         class="datatable-sorter">#No</button></th>
                                                 <th scope="col" data-sortable="true"><button
@@ -59,12 +61,12 @@
                                                         class="datatable-sorter">Action</button></th>
                                             </tr>
                                         </thead>
-
                                         <tbody>
-
                                             @if ($referrers)
                                                 @foreach ($referrers as $referrer)
                                                     <tr class="text-start">
+                                                        <td><input type="checkbox" name="selected_ids[]"
+                                                                value="{{ $referrer->id }}"></td>
                                                         <td>{{ $loop->iteration }}</td>
                                                         <td>{{ $referrer->first_name }}</td>
                                                         <td>{{ $referrer->last_name }}</td>
@@ -101,9 +103,9 @@
                                                     </tr>
                                                 @endforeach
                                             @endif
-
                                         </tbody>
                                     </table>
+                                    <button id="download-checked" class="btn btn-success mt-3">Download Checked</button>
                                 </div>
                             </div>
                         </div>

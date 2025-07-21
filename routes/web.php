@@ -33,6 +33,7 @@ Route::group(['middleware' => ['auth', 'user']], function () {
 
     Route::controller(UserController::class)->group(function(){
         Route::get('/user','index')->name('user.index');
+        Route::post('/user-profile-image-save', 'saveProfileImage')->name('user.profile.image.save');
     });
 
     Route::controller(ReferredUsersController::class)->group(function(){

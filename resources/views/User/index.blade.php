@@ -12,7 +12,7 @@
             </div> --}}
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
                     <li class="breadcrumb-item active">Dashboard</li>
                 </ol>
             </nav>
@@ -20,7 +20,28 @@
 
         <section class="section dashboard">
             <div class="row">
+                <div class="col-xxl-12 col-md-12">
+                    <div class="card info-card revenue-card">
+                        <div class="card-body p-4">
 
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <img id="UserProfileImage"
+                                        src="{{ $user->image ? asset($user->image) : asset('assets/img/placeholder.jpeg') }}"
+                                        alt="Profile" class="border border-2 border-none"
+                                        style="width:200px; height:200px">
+
+                                    <input type="file" id="UserimageUpload" style="display: none;" accept="image/*">
+                                </div>
+                                <div class="ps-3">
+                                    <h6>{{ $user->last_name }} {{ $user->last_name }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-xxl-4 col-md-6">
                     <div class="card info-card revenue-card">
                         <div class="card-body">
@@ -42,7 +63,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="col-xxl-4 col-md-6">
                     <div class="card info-card revenue-card">
                         <div class="card-body">
@@ -60,7 +80,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </section>
 
@@ -72,13 +91,13 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form method="POST" action="{{ route('payout.request') }}">
-                        
+
                         @csrf
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label for="amountInput" class="form-label">Amount</label>
-                                <input type="number" class="form-control" id="amountInput" name="amountInput" placeholder="e.g., 100.00"
-                                    step="0.01" min="0">
+                                <input type="number" class="form-control" id="amountInput" name="amountInput"
+                                    placeholder="e.g., 100.00" step="0.01" min="0">
                             </div>
                         </div>
                         <div class="modal-footer">

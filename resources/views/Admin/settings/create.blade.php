@@ -79,7 +79,7 @@
                                                 value="{{ old('points', $settings->points ?? '') }}">
                                         </div>
                                         <div class="mb-3">
-                                            <label for="referrer_percent" class="form-label">Referrer percent</label>
+                                            <label for="referrer_percent" class="form-label">Referrer Points per hour</label>
                                             <input type="text" class="form-control" id="referrer_percent"
                                                 name="referrer_percent"
                                                 value="{{ old('referrer_percent', $settings->referrer_percent ?? '') }}">

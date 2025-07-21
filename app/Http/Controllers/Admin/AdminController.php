@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\EmployeesModel;
+use App\Models\TransactionsModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,11 +16,13 @@ class AdminController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $referrers = User::where('role','user')->count();
+        $referrers = User::where('role', 'user')->count();
         $employees = EmployeesModel::count();
-        $admins = User::where('role','admin')->count();
+        $admins = User::where('role', 'admin')->count();
         $total_amount = $user->total_amount;
-        return view('Admin.index',compact('user','referrers','employees','admins','total_amount'));
+        $pending_payouts = TransactionsModel::where('status', 'pending')->sum('total_amount');
+        $completed_payouts = TransactionsModel::where('status', 'completed')->sum('total_amount');
+        return view('Admin.index', compact('pending_payouts','completed_payouts','user', 'referrers', 'employees', 'admins', 'total_amount'));
     }
 
     public function profile()
@@ -73,5 +76,39 @@ class AdminController extends Controller
         $user->save();
 
         return back()->with('success', 'Password changed successfully!');
+    }
+
+    public function saveProfileImage(Request $request)
+    {
+
+        // Validate the image file
+        $request->validate([
+            'image' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:2048',  // Adjust size limit as needed
+        ]);
+
+        // Check if the user is logged in
+        $user = Auth::user();  // Assuming the user is logged in
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension(); // Generate a unique image name
+
+            // Define the destination path
+            $destinationPath = public_path('assets/users');
+
+            // Store the image
+            $image->move($destinationPath, $imageName);
+
+            // Update user profile image in the database
+            $user->image = 'assets/users/' . $imageName;
+            $user->save();
+
+            // Return the image URL to the frontend
+            return response()->json([
+                'success' => true,
+                'imageUrl' => asset($user->image),  // Use asset() to get the full URL for the uploaded image
+            ]);
+        }
     }
 }

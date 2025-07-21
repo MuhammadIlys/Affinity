@@ -270,7 +270,6 @@ class SettingsController extends Controller
     public function runCommand(Request $request)
     {
         Artisan::call('app:calculate-weekly-connecteam-hours');
-
         return back()->with('success', 'Command executed successfully!');
     }
 }

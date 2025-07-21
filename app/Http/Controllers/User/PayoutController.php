@@ -60,17 +60,22 @@ class PayoutController extends Controller
             'amountInput' => 'required|min:1',
         ]);
 
-        $transaction = TransactionsModel::create([
-            'referrer_id' => Auth::id(),
-            'approved_by' => null,
-            'total_amount' => $validated['amountInput'],
-            'status' => 'pending',
-        ]);
+        $user = Auth::user();
+        if ($user->total_amount > 0) {
+            $transaction = TransactionsModel::create([
+                'referrer_id' => Auth::id(),
+                'approved_by' => null,
+                'total_amount' => $validated['amountInput'],
+                'status' => 'pending',
+            ]);
 
-        if ($transaction) {
-            return redirect()->back()->with('success', 'Withdraw request sent successfully');
-        } else {
-            return redirect()->back()->with('error', 'Something went wrong Kindly try again');
+            if ($transaction) {
+                return redirect()->back()->with('success', 'Withdraw request sent successfully');
+            } else {
+                return redirect()->back()->with('error', 'Something went wrong Kindly try again');
+            }
+        }else{
+                return redirect()->back()->with('error', 'You dont have enough balance');
         }
     }
 
