@@ -48,45 +48,45 @@ class ConnecteamService
         // dd($requestUrl);
 
         try {
-        // Only fetch active users
-        $response = Http::withHeaders([
-            'X-API-KEY' => $this->apiKey,
-            'Accept'    => 'application/json',
-        ])->withOptions([
-            'verify' => false, // Disable SSL in dev
-        ])->get($this->apiUrl . '?userStatus=active');
+            // Only fetch active users
+            $response = Http::withHeaders([
+                'X-API-KEY' => $this->apiKey,
+                'Accept'    => 'application/json',
+            ])->withOptions([
+                'verify' => false, // Disable SSL in dev
+            ])->get($this->apiUrl . '?userStatus=active');
 
-        if ($response->successful()) {
-            $body = $response->json();
-            $users = $body['data']['users'] ?? [];
+            if ($response->successful()) {
+                $body = $response->json();
+                $users = $body['data']['users'] ?? [];
 
-            // Find the user by ID
-            $foundUser = collect($users)->firstWhere('userId', (int) $userId);
+                // Find the user by ID
+                $foundUser = collect($users)->firstWhere('userId', (int) $userId);
 
-            if ($foundUser) {
-                return [
-                    'success' => true,
-                    'response' => $foundUser
-                ];
+                if ($foundUser) {
+                    return [
+                        'success' => true,
+                        'response' => $foundUser
+                    ];
+                } else {
+                    return [
+                        'success' => false,
+                        'error' => "User ID {$userId} not found in the active user list."
+                    ];
+                }
             } else {
-                return [
-                    'success' => false,
-                    'error' => "User ID {$userId} not found in the active user list."
-                ];
+                Log::error('Connecteam API list users error:', $response->json());
+                return ['success' => false, 'error' => $response->json()];
             }
-        } else {
-            Log::error('Connecteam API list users error:', $response->json());
-            return ['success' => false, 'error' => $response->json()];
+        } catch (\Exception $e) {
+            Log::error('Connecteam Fetch Exception: ' . $e->getMessage());
+            return ['success' => false, 'error' => $e->getMessage()];
         }
-    } catch (\Exception $e) {
-        Log::error('Connecteam Fetch Exception: ' . $e->getMessage());
-        return ['success' => false, 'error' => $e->getMessage()];
-    }
     }
 
     public function getTotalHoursWorked(array $connecteamUserIds, $startDate, $endDate, $employeeMap)
     {
-        try{
+        try {
             $client = Http::timeout(300)->withHeaders([
                 'X-API-KEY' => $this->apiKey,
                 'Accept' => 'application/json',
@@ -100,19 +100,35 @@ class ConnecteamService
             $response = $client->get('https://api.connecteam.com/time-clock/v1/time-clocks');
             if ($response->successful()) {
                 $clocks = $response->json('data.timeClocks', []);
-            }
-            else{
-                return ['success' => false, 'message' => 'Failed to fetch time clocks data.'];
+            } else {
+                $statusCode = $response->status();
+                $errorMessage = "Failed to fetch time clocks data. ";
+
+                if ($statusCode === 429) {
+                    $errorMessage .= "Error: Too Many Requests (HTTP 429). ";
+                    $errorMessage .= $this->getRateLimitDetails($response); // Correctly called here
+                } else {
+                    $errorMessage .= "HTTP Status: {$statusCode}. ";
+                    $errorMessage .= "Response: " . $response->body();
+                }
+                // Log the error for debugging
+                \Log::error('Connecteam API Error - Failed to fetch time clocks:', ['message' => $errorMessage]);
+                return ['success' => false, 'message' => $errorMessage];
             }
 
             // 2. Loop through every clock
-            if(!empty($clocks)){
-                foreach($clocks as $clock){
+            if (!empty($clocks)) {
+                foreach ($clocks as $clock) {
                     // Check if the timeclock is deleted then don't check for it's time activities
-                    if($clock['isArchived']){
+                    if ($clock['isArchived']) {
                         continue;
                     }
-                    $timeClockId = $clock['id'] ?? '11541275';
+                    // Added a check for null id and default to prevent potential issues
+                    $timeClockId = $clock['id'] ?? null;
+                    if (is_null($timeClockId)) {
+                        \Log::warning("Skipping time clock without an ID: " . json_encode($clock));
+                        continue;
+                    }
                     $timeClockName = $clock['name'] ?? 'Time Clock';
 
                     //3. Now we will get time activities for each time clock
@@ -124,9 +140,24 @@ class ConnecteamService
                     ]);
                     if ($res->successful()) {
                         $activities = $res->json('data.timeActivitiesByUsers', []);
-                    }
-                    else{
-                        return ['success' => false, 'message' => 'Failed to fetch time activities for time clock # '. $timeClockId];
+                    } else {
+                        // --- Apply rate limit check here as well ---
+                        $statusCode = $res->status();
+                        $errorMessage = "Failed to fetch time activities for time clock #{$timeClockId}. ";
+
+                        if ($statusCode === 429) {
+                            $errorMessage .= "Error: Too Many Requests (HTTP 429). ";
+                            $errorMessage .= $this->getRateLimitDetails($res); // Correctly called here
+                        } else {
+                            $errorMessage .= "HTTP Status: {$statusCode}. ";
+                            $errorMessage .= "Response: " . $res->body();
+                        }
+                        // Log the error for debugging
+                        \Log::error('Connecteam API Error - Failed to fetch time activities:', ['message' => $errorMessage, 'timeClockId' => $timeClockId]);
+                        // It's crucial to decide: do you want to stop the entire process
+                        // if one time clock's activities fail, or log and continue to the next?
+                        // For now, it returns, stopping the process.
+                        return ['success' => false, 'message' => $errorMessage];
                     }
 
                     // 4. Now group and sum durations
@@ -139,7 +170,7 @@ class ConnecteamService
 
                         $totalSeconds = 0;
 
-                        if(EmployeesModel::where('connecteam_user_id', $uid)->exists()){
+                        if (EmployeesModel::where('connecteam_user_id', $uid)->exists()) {
                             foreach ($act['shifts'] as $shift) {
                                 $start = $shift['start']['timestamp'] ?? null;
                                 $end = $shift['end']['timestamp'] ?? null;
@@ -150,30 +181,35 @@ class ConnecteamService
                             }
 
                             $hoursByUser[$uid] = ($hoursByUser[$uid] ?? 0) + $totalSeconds;
-                        }
-                        else{
+                        } else {
                             continue;
                         }
                     }
 
-                    if(!empty($hoursByUser)){
+                    if (!empty($hoursByUser)) {
                         foreach ($hoursByUser as $connecteamUserId => $secondsWorked) {
+                            // Ensure the connecteamUserId actually exists in the employeeMap
+                            if (!isset($employeeMap[$connecteamUserId])) {
+                                \Log::warning("Employee mapping missing for Connecteam user ID: {$connecteamUserId}");
+                                continue;
+                            }
+
                             $map = $employeeMap[$connecteamUserId];
                             $fromDate = $startDate;
                             $toDate = $endDate;
                             $totalHours = round($secondsWorked / 3600, 2);
                             // Save data only if employee did some work
-                            if($totalHours > 0){
+                            if ($totalHours > 0) {
                                 // Check if a user entry exists for this week or not
                                 $entryExistsForWeek = WorkHoursModel::where('from_date', $fromDate)
-                                ->where('to_date', $toDate)
-                                ->where('timeclock_id', $timeClockId)
-                                ->where('employee_id', $map['employee_id'])
-                                ->first();
+                                    ->where('to_date', $toDate)
+                                    ->where('timeclock_id', $timeClockId) // Crucial to filter by timeclock_id
+                                    ->where('employee_id', $map['employee_id'])
+                                    ->first();
 
-                                $tokensPerHour = SettingsModel::value('points'); 
-                                
-                                if(!$entryExistsForWeek){
+                                $tokensPerHour = SettingsModel::value('points');
+
+                                if (!$entryExistsForWeek) {
                                     WorkHoursModel::create([
                                         'employee_id' => $map['employee_id'],
                                         'referrer_id' => $map['referrer_id'],
@@ -185,8 +221,7 @@ class ConnecteamService
                                         'total_hours' => $totalHours,
                                         'tokens' => $totalHours * $tokensPerHour
                                     ]);
-                                }
-                                else if($entryExistsForWeek && $entryExistsForWeek->total_hours != $totalHours){
+                                } else if ($entryExistsForWeek && $entryExistsForWeek->total_hours != $totalHours) {
                                     $entryExistsForWeek->update([
                                         'total_hours' => $totalHours,
                                         'tokens' => $totalHours * $tokensPerHour
@@ -197,13 +232,48 @@ class ConnecteamService
                     }
                 }
                 return ['success' => true, 'message' => 'Done.'];
-            }
-            else{
+            } else {
                 return ['success' => true, 'message' => 'There is no time clocks present.'];
             }
-            return ['success' => true];
         } catch (\Exception $e) {
-            return ['success' => false, 'error' => $e];
+            // General catch-all for unexpected errors (e.g., network issues not resulting in HTTP response)
+            \Log::error('Connecteam getTotalHoursWorked Exception: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return ['success' => false, 'message' => 'An unexpected error occurred: ' . $e->getMessage()];
         }
+    }
+
+    // ... (Your getRateLimitDetails method should be here, within the class) ...
+    protected function getRateLimitDetails(\Illuminate\Http\Client\Response $response): string
+    {
+        $details = [];
+        $limit = $response->header('x-ratelimit-minute-limit');
+        $remaining = $response->header('x-ratelimit-minute-remaining');
+        $reset = $response->header('x-ratelimit-minute-reset');
+        $retryAfter = $response->header('Retry-After');
+
+        if ($limit) {
+            $details[] = "Limit: {$limit} req/min";
+        }
+        if ($remaining !== null) {
+            $details[] = "Remaining: {$remaining} req";
+        }
+        if ($reset) {
+            try {
+                $resetDateTime = new \DateTimeImmutable('@' . $reset);
+                $details[] = "Reset: " . $resetDateTime->format('Y-m-d H:i:s T');
+            } catch (\Exception $e) {
+                $details[] = "Reset (raw): {$reset}";
+            }
+        }
+        if ($retryAfter) {
+            $details[] = "Retry-After: {$retryAfter} seconds";
+        }
+
+        $body = $response->body();
+        if (!empty($body) && $body !== '[]' && $body !== '{}') {
+            $details[] = "Response Body: " . $body;
+        }
+
+        return !empty($details) ? implode('. ', $details) : "No specific rate limit headers or body found.";
     }
 }

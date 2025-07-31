@@ -28,4 +28,8 @@ class EmployeesModel extends Model
         return $this->belongsTo(User::class, 'refered_by')
             ->select('id', 'first_name', 'last_name');
     }
+    public function workHours()
+    {
+        return $this->hasMany(WorkHoursModel::class, 'employee_id');
+    }
 }

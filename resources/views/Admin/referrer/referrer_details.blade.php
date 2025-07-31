@@ -68,7 +68,7 @@
                                                     </div>
                                                     <div class="ps-3">
                                                         <h6 style="font-size: 16px; font-weight:600" class="me-2">
-                                                            Software Engineer</h6>
+                                                            {{ $referrer->job_title }}</h6>
                                                     </div>
                                                 </div>
                                             </div>

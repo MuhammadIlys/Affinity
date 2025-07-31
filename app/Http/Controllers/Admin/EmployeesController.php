@@ -17,8 +17,9 @@ class EmployeesController extends Controller
     public function index()
     {
         // $employees = EmployeesModel::with('referrer')->get();
-        $employees = EmployeesModel::with('referrer')->get();
-        // return $employees;
+        $employees = EmployeesModel::with('referrer')
+            ->withSum('workHours', 'tokens') // assuming 'amount' is the field to sum
+            ->get();
         return view('Admin.employee.index', compact('employees'));
     }
 
@@ -98,8 +99,11 @@ class EmployeesController extends Controller
      */
     public function show(string $id)
     {
-        $employee = EmployeesModel::findorfail($id);
-        return view('Admin.employee.employee_details',compact('employee'));
+        // $employee = EmployeesModel::findorfail($id);
+       $employee = EmployeesModel::withSum('workHours', 'tokens')->findOrFail($id);
+
+            // return $employee;
+        return view('Admin.employee.employee_details', compact('employee'));
     }
 
     /**

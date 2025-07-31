@@ -61,7 +61,8 @@ class PayoutController extends Controller
         ]);
 
         $user = Auth::user();
-        if ($user->total_amount > 0) {
+        $total_amount = calculate_referrer_bonus($user);
+        if ($total_amount > 0) {
             $transaction = TransactionsModel::create([
                 'referrer_id' => Auth::id(),
                 'approved_by' => null,
@@ -74,8 +75,8 @@ class PayoutController extends Controller
             } else {
                 return redirect()->back()->with('error', 'Something went wrong Kindly try again');
             }
-        }else{
-                return redirect()->back()->with('error', 'You dont have enough balance');
+        } else {
+            return redirect()->back()->with('error', 'You dont have enough balance');
         }
     }
 

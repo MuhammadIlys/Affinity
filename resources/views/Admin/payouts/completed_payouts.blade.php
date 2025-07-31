@@ -58,11 +58,11 @@
                                                 <td>{{ $payout->status }}</td>
                                                 <td>{{ $payout->created_at }}</td>
                                                 <td>
-                                                    <a href="{{ route('request.pending', encrypt($payout->id)) }}"
+                                                    {{-- <a href="{{ route('request.pending', encrypt($payout->id)) }}"
                                                         class="btn btn-sm btn-info mb-1"
                                                         onclick="return confirm('Are you sure you want to mark this request as Pending?')">
                                                         Pending
-                                                    </a>
+                                                    </a> --}}
 
                                                     {{-- <a href="javascript:void(0)"
                                                         class="btn btn-sm btn-primary mb-1 edit-btn"
@@ -71,18 +71,18 @@
                                                         data-url="{{ route('request.update', encrypt($payout->id)) }}">
                                                         Edit
                                                     </a>  --}}
-                                                    <a href="{{ route('request.reject', encrypt($payout->id)) }}"
+                                                    {{-- <a href="{{ route('request.reject', encrypt($payout->id)) }}"
                                                         class="btn btn-sm btn-warning mb-1"
                                                         onclick="return confirm('Are you sure you want to Reject this request?')">
                                                         Reject
-                                                    </a>
-                                                    <form action="{{ route('request.delete', encrypt($payout->id)) }}"
+                                                    </a> --}}
+                                                    {{-- <form action="{{ route('request.delete', encrypt($payout->id)) }}"
                                                         method="POST" class="d-inline-block">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-sm btn-danger"
                                                             onclick="return confirm('Are you sure you want to delete this request?')">Delete</button>
-                                                    </form>
+                                                    </form> --}}
                                                 </td>
                                             </tr>
                                         @endforeach

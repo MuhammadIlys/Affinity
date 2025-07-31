@@ -92,7 +92,7 @@
                                                         <i class="bi bi-aspect-ratio-fill"></i>
                                                     </div>
                                                     <div class="ps-3">
-                                                        <h6 style="font-size: 16px; font-weight:600" class="me-2">{{ $employee->total_amount }}</h6>
+                                                        <h6 style="font-size: 16px; font-weight:600" class="me-2">{{ $employee->work_hours_sum_tokens }}</h6>
                                                     </div>
                                                 </div>
                                             </div>

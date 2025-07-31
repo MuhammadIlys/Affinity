@@ -34,7 +34,7 @@
                                     <input type="file" id="UserimageUpload" style="display: none;" accept="image/*">
                                 </div>
                                 <div class="ps-3">
-                                    <h6>{{ $user->last_name }} {{ $user->last_name }}</h6>
+                                    <h6>{{ $user->first_name }} {{ $user->last_name }}</h6>
                                 </div>
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                                     <i class="bi bi-coin"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>{{ $amount }}</h6>
+                                    <h6>{{ $user->amount }}</h6>
                                 </div>
                             </div>
                         </div>

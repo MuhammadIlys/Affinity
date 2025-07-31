@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class ReferrerController extends Controller
@@ -21,18 +22,15 @@ class ReferrerController extends Controller
         $referrers = User::where('role', 'user')->get();
         $referrer_percent = SettingsModel::value('referrer_percent'); // returns value directly
 
-        // Add earnings to each referrer
         foreach ($referrers as $referrer) {
-            $referredEmployees = EmployeesModel::where('refered_by', $referrer->id)->get();
+            // Sum tokens (or total_hours if preferred) for this referrer from work_hours table
+            $totalTokens = DB::table('work_hours')
+                ->where('referrer_id', $referrer->id)
+                ->sum('total_hours'); // or ->sum('total_hours')
 
-            $totalEarnings = 0;
-            foreach ($referredEmployees as $employee) {
-                $totalEarnings += ($employee->total_amount * $referrer_percent);
-            }
-
-            // Add earnings as a custom attribute
-            $referrer->referral_earnings = round($totalEarnings, 2);
+            $referrer->total_amount = round($totalTokens * $referrer_percent, 2);
         }
+
         return view('Admin.referrer.index', compact('referrers'));
     }
 
@@ -84,7 +82,7 @@ class ReferrerController extends Controller
      */
     public function show(string $id)
     {
-        $referrer = User::findorfail($id); 
+        $referrer = User::findorfail($id);
         $total_amount = calculate_referrer_bonus($referrer);
         $referrer->total_amount = $total_amount;
         return view('Admin.referrer.referrer_details', compact('referrer'));

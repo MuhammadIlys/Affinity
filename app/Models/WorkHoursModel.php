@@ -20,4 +20,6 @@ class WorkHoursModel extends Model
         'total_hours',
         'tokens'
     ];
+
+    
 }

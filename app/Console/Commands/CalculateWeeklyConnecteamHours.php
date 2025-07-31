@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\EmployeesModel;
+use App\Models\User;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use App\Services\ConnecteamService;
@@ -53,11 +54,41 @@ class CalculateWeeklyConnecteamHours extends Command
                 $connecteamUserIds = $employees->pluck('connecteam_user_id')->toArray();
 
                 $result = $connecteam->getTotalHoursWorked($connecteamUserIds, $startDate, $endDate, $employeeMap);
-                if (!empty($result['success']) && $result['success'] === true) {
-                    $this->info("Weekly hours successfully completed on attempt #$attempt");
-                    return 0;
+
+                if (!empty($result['data'])) {
+                    foreach ($result['data'] as $connecteamUserId => $hoursWorked) {
+                        if (isset($employeeMap[$connecteamUserId])) {
+                            $employeeId = $employeeMap[$connecteamUserId]['employee_id'];
+
+                            EmployeesModel::where('id', $employeeId)
+                                ->update(['total_amount' => $hoursWorked]);
+                        }
+                    }
+                    
+                    $referrerHours = [];
+
+                    foreach ($result['data'] as $connecteamUserId => $hoursWorked) {
+                        if (isset($employeeMap[$connecteamUserId])) {
+                            $referrerId = $employeeMap[$connecteamUserId]['referrer_id'];
+
+                            if ($referrerId) {
+                                if (!isset($referrerHours[$referrerId])) {
+                                    $referrerHours[$referrerId] = 0;
+                                }
+
+                                $referrerHours[$referrerId] += $hoursWorked;
+                            }
+                        }
+                    }
+
+                    // Update users' total_amount column with accumulated hours
+                    foreach ($referrerHours as $userId => $totalHours) {
+                        User::where('id', $userId)
+                            ->increment('total_amount', $totalHours); // adjust column name if different
+                    }
+
                 } else {
-                    $this->warn("Attempt #$attempt failed: API returned unsuccessful result.");
+                    $this->warn(json_encode($result));
                     // Check if this was the last attempt
                     if ($attempt >= $maxRetries) {
                         $this->error("Max retries reached with unsuccessful API response.");
