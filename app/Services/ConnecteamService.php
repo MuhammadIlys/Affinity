@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\EmployeesModel;
 use App\Models\SettingsModel;
+use App\Models\User;
 use App\Models\WorkHoursModel;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -112,7 +113,7 @@ class ConnecteamService
                     $errorMessage .= "Response: " . $response->body();
                 }
                 // Log the error for debugging
-                \Log::error('Connecteam API Error - Failed to fetch time clocks:', ['message' => $errorMessage]);
+                Log::error('Connecteam API Error - Failed to fetch time clocks:', ['message' => $errorMessage]);
                 return ['success' => false, 'message' => $errorMessage];
             }
 
@@ -126,7 +127,7 @@ class ConnecteamService
                     // Added a check for null id and default to prevent potential issues
                     $timeClockId = $clock['id'] ?? null;
                     if (is_null($timeClockId)) {
-                        \Log::warning("Skipping time clock without an ID: " . json_encode($clock));
+                        Log::warning("Skipping time clock without an ID: " . json_encode($clock));
                         continue;
                     }
                     $timeClockName = $clock['name'] ?? 'Time Clock';
@@ -153,7 +154,7 @@ class ConnecteamService
                             $errorMessage .= "Response: " . $res->body();
                         }
                         // Log the error for debugging
-                        \Log::error('Connecteam API Error - Failed to fetch time activities:', ['message' => $errorMessage, 'timeClockId' => $timeClockId]);
+                        Log::error('Connecteam API Error - Failed to fetch time activities:', ['message' => $errorMessage, 'timeClockId' => $timeClockId]);
                         // It's crucial to decide: do you want to stop the entire process
                         // if one time clock's activities fail, or log and continue to the next?
                         // For now, it returns, stopping the process.
@@ -190,7 +191,7 @@ class ConnecteamService
                         foreach ($hoursByUser as $connecteamUserId => $secondsWorked) {
                             // Ensure the connecteamUserId actually exists in the employeeMap
                             if (!isset($employeeMap[$connecteamUserId])) {
-                                \Log::warning("Employee mapping missing for Connecteam user ID: {$connecteamUserId}");
+                                Log::warning("Employee mapping missing for Connecteam user ID: {$connecteamUserId}");
                                 continue;
                             }
 
@@ -221,11 +222,28 @@ class ConnecteamService
                                         'total_hours' => $totalHours,
                                         'tokens' => $totalHours * $tokensPerHour
                                     ]);
+
+                                    EmployeesModel::where('id', $map['employee_id'])
+                                        ->increment('hours', $totalHours)
+                                        ->increment('total_amount', $totalHours);
+
+                                    User::where('id', $map['referrer_id'])->increment('total_amount', $totalHours);
+
                                 } else if ($entryExistsForWeek && $entryExistsForWeek->total_hours != $totalHours) {
+                                    // Calculate the additional hours
+                                    $extraHours = $totalHours - $entryExistsForWeek->total_hours;
+
                                     $entryExistsForWeek->update([
                                         'total_hours' => $totalHours,
                                         'tokens' => $totalHours * $tokensPerHour
                                     ]);
+
+                                    // Add only the extra hours (not the entire total) to the employee and referrer
+                                    EmployeesModel::where('id', $map['employee_id'])
+                                        ->increment('hours', $extraHours)
+                                        ->increment('total_amount', $extraHours);
+
+                                    User::where('id', $map['referrer_id'])->increment('total_amount', $extraHours);
                                 }
                             }
                         }
@@ -237,7 +255,7 @@ class ConnecteamService
             }
         } catch (\Exception $e) {
             // General catch-all for unexpected errors (e.g., network issues not resulting in HTTP response)
-            \Log::error('Connecteam getTotalHoursWorked Exception: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            Log::error('Connecteam getTotalHoursWorked Exception: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return ['success' => false, 'message' => 'An unexpected error occurred: ' . $e->getMessage()];
         }
     }

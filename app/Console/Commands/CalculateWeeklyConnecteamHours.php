@@ -55,38 +55,9 @@ class CalculateWeeklyConnecteamHours extends Command
 
                 $result = $connecteam->getTotalHoursWorked($connecteamUserIds, $startDate, $endDate, $employeeMap);
 
-                if (!empty($result['data'])) {
-                    foreach ($result['data'] as $connecteamUserId => $hoursWorked) {
-                        if (isset($employeeMap[$connecteamUserId])) {
-                            $employeeId = $employeeMap[$connecteamUserId]['employee_id'];
-
-                            EmployeesModel::where('id', $employeeId)
-                                ->update(['total_amount' => $hoursWorked]);
-                        }
-                    }
-                    
-                    $referrerHours = [];
-
-                    foreach ($result['data'] as $connecteamUserId => $hoursWorked) {
-                        if (isset($employeeMap[$connecteamUserId])) {
-                            $referrerId = $employeeMap[$connecteamUserId]['referrer_id'];
-
-                            if ($referrerId) {
-                                if (!isset($referrerHours[$referrerId])) {
-                                    $referrerHours[$referrerId] = 0;
-                                }
-
-                                $referrerHours[$referrerId] += $hoursWorked;
-                            }
-                        }
-                    }
-
-                    // Update users' total_amount column with accumulated hours
-                    foreach ($referrerHours as $userId => $totalHours) {
-                        User::where('id', $userId)
-                            ->increment('total_amount', $totalHours); // adjust column name if different
-                    }
-
+                 if (!empty($result['success']) && $result['success'] === true) {
+                    $this->info("Weekly hours successfully completed on attempt #$attempt");
+                    return 0;
                 } else {
                     $this->warn(json_encode($result));
                     // Check if this was the last attempt
