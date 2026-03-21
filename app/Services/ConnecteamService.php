@@ -6,6 +6,7 @@ use App\Models\EmployeesModel;
 use App\Models\SettingsModel;
 use App\Models\User;
 use App\Models\WorkHoursModel;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -223,12 +224,13 @@ class ConnecteamService
                                         'tokens' => $totalHours * $tokensPerHour
                                     ]);
 
-                                    EmployeesModel::where('id', $map['employee_id'])
-                                        ->increment('hours', $totalHours)
-                                        ->increment('total_amount', $totalHours);
-
+                                    EmployeesModel::where('id', $map['employee_id'])->update([
+                                        'hours' => DB::raw('hours + ' . $totalHours),
+                                        'total_amount' => DB::raw('total_amount + ' . $totalHours),
+                                    ]);
+                                    // Update the User model
                                     User::where('id', $map['referrer_id'])->increment('total_amount', $totalHours);
-
+                                
                                 } else if ($entryExistsForWeek && $entryExistsForWeek->total_hours != $totalHours) {
                                     // Calculate the additional hours
                                     $extraHours = $totalHours - $entryExistsForWeek->total_hours;

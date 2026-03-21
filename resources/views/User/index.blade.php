@@ -57,7 +57,7 @@
                                     <i class="bi bi-coin"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>{{ $user->amount }}</h6>
+                                    <h6>{{ $user->total_amount }}</h6>
                                 </div>
                             </div>
                         </div>
@@ -97,7 +97,7 @@
                             <div class="mb-3">
                                 <label for="amountInput" class="form-label">Amount</label>
                                 <input type="number" class="form-control" id="amountInput" name="amountInput"
-                                    placeholder="e.g., 100.00" step="0.01" min="0">
+                                    placeholder="e.g., 100.00" step="0.01" min="0" max="{{ $user->total_amount }}">
                             </div>
                         </div>
                         <div class="modal-footer">

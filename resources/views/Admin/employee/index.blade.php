@@ -47,7 +47,7 @@
                                                 <th scope="col" data-sortable="true"><button
                                                         class="datatable-sorter">Phone</button></th>
                                                 <th scope="col" data-sortable="true"><button
-                                                        class="datatable-sorter">Balance</button></th>
+                                                        class="datatable-sorter">Hours</button></th>
                                                 <th scope="col" data-sortable="true"><button
                                                         class="datatable-sorter">DOB</button></th>
                                                 <th scope="col" data-sortable="true"><button
@@ -71,7 +71,7 @@
                                                         <td>{{ $employees->job_title }}</td>
                                                         <td>{{ $employees->address }}</td>
                                                         <td>{{ $employees->phone }}</td>
-                                                        <td>{{ $employees->work_hours_sum_tokens }}</td>
+                                                        <td>{{ $employees->total_amount }}</td>
                                                         <td>{{ $employees->dob }}</td>
                                                         <td>{{ $employees->status }}</td>
                                                         <td class="d-flex flex-column gap-1">

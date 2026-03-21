@@ -19,14 +19,15 @@ class PayoutRequestsController extends Controller
         $admin = Auth::user();
 
         // Deduct from referrer
-        $referrer->total_amount = round((float)$referrer->total_amount - (float)$payout->total_amount, 2);
-
-        // Add to admin
-        $admin->total_amount = round((float)$admin->total_amount + (float)$payout->total_amount, 2);
+        $referrer_total_amount = round((float)$referrer->total_amount - (float)$payout->total_amount, 2);
+        $admin_total_amount = round((float)$admin->total_amount + (float)$payout->total_amount, 2);
 
         // Update approved_by and status
         $payout->approved_by = $admin->id;
         $payout->status = 'completed';
+
+        $referrer->total_amount = $referrer_total_amount;
+        $admin->total_amount = $admin_total_amount;
 
         $referrer->save();
         $admin->save();

@@ -56,13 +56,13 @@ class PayoutController extends Controller
     }
     public function requestPayout(Request $request)
     {
+ 
         $validated = $request->validate([
             'amountInput' => 'required|min:1',
         ]);
 
-        $user = Auth::user();
-        $total_amount = calculate_referrer_bonus($user);
-        if ($total_amount > 0) {
+        // $total_amount = calculate_referrer_bonus($user);
+        if ($request->amountInput > 0) {
             $transaction = TransactionsModel::create([
                 'referrer_id' => Auth::id(),
                 'approved_by' => null,

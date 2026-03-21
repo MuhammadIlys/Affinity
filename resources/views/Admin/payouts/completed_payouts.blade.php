@@ -76,13 +76,13 @@
                                                         onclick="return confirm('Are you sure you want to Reject this request?')">
                                                         Reject
                                                     </a> --}}
-                                                    {{-- <form action="{{ route('request.delete', encrypt($payout->id)) }}"
+                                                    <form action="{{ route('request.delete', encrypt($payout->id)) }}"
                                                         method="POST" class="d-inline-block">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-sm btn-danger"
                                                             onclick="return confirm('Are you sure you want to delete this request?')">Delete</button>
-                                                    </form> --}}
+                                                    </form>
                                                 </td>
                                             </tr>
                                         @endforeach

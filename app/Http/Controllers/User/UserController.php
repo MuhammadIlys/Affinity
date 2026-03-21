@@ -14,9 +14,10 @@ class UserController extends Controller
         $user = Auth::user();
         $referred_users = EmployeesModel::where('refered_by', $user->id)
             ->count();
-        $total_amount = calculate_referrer_bonus($user);
-        $user->amount = $total_amount;
-        return view('User.index', compact('referred_users', 'user'));
+        // $total_amount = calculate_referrer_bonus($user);
+        // $user->amount = $total_amount;
+        // return $user;
+        return view('User.index', compact('referred_users','user'));
     }
 
     public function saveProfileImage(Request $request)

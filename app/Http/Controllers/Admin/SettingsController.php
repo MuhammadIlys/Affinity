@@ -72,7 +72,6 @@ class SettingsController extends Controller
         }
 
         $data = $validator->validated();
-        return $data;
         $timestamp = now()->format('Ymd_His');
         $destination = public_path('assets/img');
         if ($request->hasFile('logo')) {

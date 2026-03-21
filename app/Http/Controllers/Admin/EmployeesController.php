@@ -18,8 +18,9 @@ class EmployeesController extends Controller
     {
         // $employees = EmployeesModel::with('referrer')->get();
         $employees = EmployeesModel::with('referrer')
-            ->withSum('workHours', 'tokens') // assuming 'amount' is the field to sum
+            ->withSum('workHours', 'tokens')
             ->get();
+            // dd($employees);
         return view('Admin.employee.index', compact('employees'));
     }
 

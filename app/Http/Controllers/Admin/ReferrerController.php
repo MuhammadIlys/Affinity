@@ -20,16 +20,16 @@ class ReferrerController extends Controller
     public function index()
     {
         $referrers = User::where('role', 'user')->get();
-        $referrer_percent = SettingsModel::value('referrer_percent'); // returns value directly
+        // $referrer_percent = SettingsModel::value('referrer_percent'); // returns value directly
 
-        foreach ($referrers as $referrer) {
-            // Sum tokens (or total_hours if preferred) for this referrer from work_hours table
-            $totalTokens = DB::table('work_hours')
-                ->where('referrer_id', $referrer->id)
-                ->sum('total_hours'); // or ->sum('total_hours')
+        // foreach ($referrers as $referrer) {
+        //     // Sum tokens (or total_hours if preferred) for this referrer from work_hours table
+        //     $totalTokens = DB::table('work_hours')
+        //         ->where('referrer_id', $referrer->id)
+        //         ->sum('total_hours'); // or ->sum('total_hours')
 
-            $referrer->total_amount = round($totalTokens * $referrer_percent, 2);
-        }
+        //     $referrer->total_amount = round($totalTokens * $referrer_percent, 2);
+        // }
 
         return view('Admin.referrer.index', compact('referrers'));
     }
@@ -83,8 +83,8 @@ class ReferrerController extends Controller
     public function show(string $id)
     {
         $referrer = User::findorfail($id);
-        $total_amount = calculate_referrer_bonus($referrer);
-        $referrer->total_amount = $total_amount;
+        // $total_amount = calculate_referrer_bonus($referrer);
+        // $referrer->total_amount = $total_amount;
         return view('Admin.referrer.referrer_details', compact('referrer'));
     }
 
